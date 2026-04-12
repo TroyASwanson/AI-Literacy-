@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Feeling of Knowing</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg-subtle: #f8f8fa;
+    --text: #1a1a2e;
+    --text-sec: #4a4a5a;
+    --text-muted: #9090a0;
+    --accent: #2563eb;
+    --accent-light: #eff4ff;
+    --accent-border: #c5d5f7;
+    --border: #e8e8ec;
+    --border-light: #f0f0f3;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;min-height:100vh;-webkit-font-smoothing:antialiased}
+  .container{max-width:640px;margin:0 auto;padding:56px 24px 100px}
+  .screen{display:none}.screen.active{display:block;animation:fadeUp .45s ease}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+  .intro-tag{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);margin-bottom:24px}
+  h1{font-family:'Source Serif 4',serif;font-size:clamp(40px,7vw,56px);font-weight:700;line-height:1.1;margin-bottom:24px;letter-spacing:-1px}
+  h1 span{color:var(--accent)}
+  .intro-body{font-size:16px;color:var(--text-sec);margin-bottom:44px;max-width:480px;line-height:1.75}
+  .intro-steps{display:flex;gap:1px;background:var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:48px}
+  .intro-step{flex:1;background:var(--bg-subtle);padding:22px 18px}
+  .intro-step-num{font-family:'Source Serif 4',serif;font-size:24px;font-weight:700;color:var(--accent);margin-bottom:6px}
+  .intro-step-text{font-size:13px;color:var(--text-sec);line-height:1.5}
+
+  .btn{font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;border:none;cursor:pointer;border-radius:var(--radius-sm);padding:12px 28px;transition:all .2s}
+  .btn-primary{background:var(--accent);color:#fff}
+  .btn-primary:hover{background:#1d4ed8}
+  .btn:disabled{opacity:.3;cursor:not-allowed}
+
+  .progress-bar{display:flex;gap:6px;margin-bottom:48px}
+  .progress-seg{height:3px;flex:1;background:var(--border);border-radius:3px}
+  .progress-seg.filled{background:var(--accent)}
+  .progress-seg.current{background:var(--accent);opacity:.3}
+
+  .q-tag{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:20px}
+  .q-text{font-family:'Source Serif 4',serif;font-size:clamp(22px,4vw,28px);font-weight:600;line-height:1.4;margin-bottom:32px}
+
+  .answer-input{width:100%;font-family:'DM Sans',sans-serif;font-size:15px;padding:14px 18px;border:1.5px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);outline:none;transition:border-color .2s;resize:vertical}
+  .answer-input::placeholder{color:var(--text-muted)}
+  .answer-input:focus{border-color:var(--accent)}
+  textarea.answer-input{min-height:100px}
+
+  .conf-section{margin-top:32px;padding-top:28px;border-top:1px solid var(--border-light)}
+  .conf-label{font-size:14px;font-weight:500;margin-bottom:14px}
+  .conf-options{display:flex;gap:6px;margin-bottom:6px}
+  .conf-btn{flex:1;padding:12px 6px;border:1.5px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;color:var(--text-muted);cursor:pointer;transition:all .15s;text-align:center}
+  .conf-btn:hover{border-color:var(--accent);color:var(--accent)}
+  .conf-btn.selected{background:var(--accent);border-color:var(--accent);color:#fff}
+  .conf-ends{display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted)}
+  .submit-row{margin-top:36px;display:flex;justify-content:flex-end}
+
+  .reveal-section{animation:fadeUp .5s ease}
+  .your-resp{padding:14px 18px;background:var(--bg-subtle);border:1px solid var(--border-light);border-radius:var(--radius-sm);margin-bottom:20px}
+  .your-resp-label{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:1.2px;color:var(--text-muted);margin-bottom:4px}
+  .your-resp-text{font-size:14px;color:var(--text-sec)}
+  .your-resp-conf{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-muted);margin-top:6px}
+
+  .reveal-box{border:1.5px solid var(--accent-border);background:var(--accent-light);border-radius:var(--radius);padding:24px;margin-bottom:24px}
+  .reveal-label{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:10px}
+  .reveal-text{font-family:'Source Serif 4',serif;font-size:18px;line-height:1.55;color:var(--text)}
+  .reveal-text em{font-style:italic;color:var(--accent);font-weight:600}
+
+  .math-grid{display:flex;gap:8px;margin-top:16px}
+  .math-cell{flex:1;background:var(--bg);border:1px solid var(--accent-border);border-radius:var(--radius-sm);padding:14px;text-align:center}
+  .math-cell-label{font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--text-muted);margin-bottom:2px}
+  .math-cell-val{font-family:'Source Serif 4',serif;font-size:24px;font-weight:700;color:var(--accent)}
+
+  .nudge{border-left:3px solid var(--accent);padding:20px 24px;margin-bottom:36px;background:var(--bg-subtle);border-radius:0 var(--radius-sm) var(--radius-sm) 0}
+  .nudge-title{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:10px}
+  .nudge-text{font-size:14px;line-height:1.85;color:var(--text-sec)}
+  .nudge-text strong{color:var(--text);font-weight:600}
+  .nudge-text em{color:var(--accent);font-style:normal;font-weight:500}
+
+  .reveal-nav{display:flex;justify-content:flex-end}
+
+  .summary-header{text-align:center;padding:48px 16px;margin-bottom:36px;border-bottom:1px solid var(--border-light)}
+  .summary-header h2{font-family:'Source Serif 4',serif;font-size:clamp(30px,5.5vw,42px);font-weight:700;letter-spacing:-.5px;margin-bottom:16px}
+  .summary-header h2 span{color:var(--accent)}
+  .summary-header p{font-size:15px;line-height:1.8;color:var(--text-sec);max-width:460px;margin:0 auto}
+
+  .results-section{margin-bottom:36px}
+  .results-title{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);margin-bottom:12px}
+  .result-row{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid var(--border-light)}
+  .result-row:last-child{border-bottom:none}
+  .result-q{font-size:14px;color:var(--text)}
+  .result-c{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--accent);font-weight:500}
+
+  .fok-card{background:var(--bg-subtle);border:1px solid var(--border-light);border-radius:var(--radius);padding:32px;margin-bottom:28px}
+  .fok-card h3{font-family:'Source Serif 4',serif;font-size:20px;font-weight:600;margin-bottom:20px}
+  .fok-parts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px}
+  .fok-part{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:20px 16px;text-align:center}
+  .fok-part-num{font-family:'Source Serif 4',serif;font-size:28px;font-weight:700;color:var(--accent);margin-bottom:4px}
+  .fok-part-title{font-weight:600;font-size:14px;margin-bottom:4px}
+  .fok-part-desc{font-size:12px;color:var(--text-muted);line-height:1.55}
+  .fok-card p{font-size:14px;line-height:1.8;color:var(--text-sec);margin-bottom:10px}
+
+  .continue-prompt{text-align:center;font-size:13px;color:var(--text-muted);margin-top:44px;padding-top:24px;border-top:1px solid var(--border-light)}
+
+  @media(max-width:520px){.container{padding:36px 16px 60px}.intro-steps{flex-direction:column;gap:1px}.conf-options{flex-wrap:wrap}.math-grid{flex-direction:column}.fok-parts{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="screen active" id="screen-intro">
+    <div class="intro-tag">Class 1 · Interactive Module</div>
+    <h1>The <span>Feeling</span><br>of Knowing</h1>
+    <p class="intro-body">Before we dive into how knowing works, let's try a quick experiment. You'll answer four questions — there are no grades here. What matters isn't whether you get them right. What matters is what you notice about how your mind responds.</p>
+    <div class="intro-steps">
+      <div class="intro-step"><div class="intro-step-num">1</div><div class="intro-step-text">Answer each question honestly</div></div>
+      <div class="intro-step"><div class="intro-step-num">2</div><div class="intro-step-text">Rate how confident you feel</div></div>
+      <div class="intro-step"><div class="intro-step-num">3</div><div class="intro-step-text">Read the reveal &amp; reflect</div></div>
+    </div>
+    <button class="btn btn-primary" onclick="goTo('q1')">Begin the Experiment →</button>
+  </div>
+
+  <div class="screen" id="screen-q1">
+    <div class="progress-bar"><div class="progress-seg current"></div><div class="progress-seg"></div><div class="progress-seg"></div><div class="progress-seg"></div></div>
+    <div class="q-tag">Question 01 / 04</div>
+    <div class="q-text">On average, highly intelligent women marry less intelligent partners. Why do you think this is?</div>
+    <textarea class="answer-input" id="answer-q1" placeholder="Type your answer here…"></textarea>
+    <div class="conf-section"><div class="conf-label">How confident are you in your answer?</div><div class="conf-options" id="conf-q1"><button class="conf-btn" data-val="1" onclick="sel(this)">1</button><button class="conf-btn" data-val="2" onclick="sel(this)">2</button><button class="conf-btn" data-val="3" onclick="sel(this)">3</button><button class="conf-btn" data-val="4" onclick="sel(this)">4</button><button class="conf-btn" data-val="5" onclick="sel(this)">5</button></div><div class="conf-ends"><span>Just guessing</span><span>Completely sure</span></div></div>
+    <div class="submit-row"><button class="btn btn-primary" id="submit-q1" disabled onclick="doReveal('q1')">See the Answer →</button></div>
+  </div>
+
+  <div class="screen" id="screen-r1">
+    <div class="progress-bar"><div class="progress-seg filled"></div><div class="progress-seg"></div><div class="progress-seg"></div><div class="progress-seg"></div></div>
+    <div class="reveal-section"><div class="q-tag">Question 01 — Reveal</div>
+    <div class="your-resp"><div class="your-resp-label">Your response</div><div class="your-resp-text" id="echo-q1"></div><div class="your-resp-conf" id="cecho-q1"></div></div>
+    <div class="reveal-box"><div class="reveal-label">Answer</div><div class="reveal-text">On average, <em>all</em> highly intelligent people marry less intelligent partners. It's just math — regression to the mean. Gender has nothing to do with it.</div></div>
+    <div class="nudge"><div class="nudge-title">What to notice</div><div class="nudge-text">This question was framed to make you think about gender, but gender has nothing to do with the answer. Notice how the framing shaped your response — your mind likely started building explanations about why women specifically would do this. That's your <strong>schemas</strong> at work. Schemas are bundles of memories, experiences, and assumptions that activate automatically when you encounter a topic. The word "women" activated a whole set of associations that pulled your thinking in a particular direction. You weren't reasoning from evidence — you were constructing a story based on patterns your mind already had. This is one way the feeling of knowing can mislead us: the question <em>felt</em> like it had a social or psychological answer because of how it was framed, not because of the actual math behind it.</div></div>
+    <div class="reveal-nav"><button class="btn btn-primary" onclick="goTo('q2')">Next Question →</button></div></div>
+  </div>
+
+  <div class="screen" id="screen-q2">
+    <div class="progress-bar"><div class="progress-seg filled"></div><div class="progress-seg current"></div><div class="progress-seg"></div><div class="progress-seg"></div></div>
+    <div class="q-tag">Question 02 / 04</div>
+    <div class="q-text">Who was the 8th president of the United States?</div>
+    <input class="answer-input" type="text" id="answer-q2" placeholder="Type your answer here…">
+    <div class="conf-section"><div class="conf-label">How confident are you in your answer?</div><div class="conf-options" id="conf-q2"><button class="conf-btn" data-val="1" onclick="sel(this)">1</button><button class="conf-btn" data-val="2" onclick="sel(this)">2</button><button class="conf-btn" data-val="3" onclick="sel(this)">3</button><button class="conf-btn" data-val="4" onclick="sel(this)">4</button><button class="conf-btn" data-val="5" onclick="sel(this)">5</button></div><div class="conf-ends"><span>Just guessing</span><span>Completely sure</span></div></div>
+    <div class="submit-row"><button class="btn btn-primary" id="submit-q2" disabled onclick="doReveal('q2')">See the Answer →</button></div>
+  </div>
+
+  <div class="screen" id="screen-r2">
+    <div class="progress-bar"><div class="progress-seg filled"></div><div class="progress-seg filled"></div><div class="progress-seg"></div><div class="progress-seg"></div></div>
+    <div class="reveal-section"><div class="q-tag">Question 02 — Reveal</div>
+    <div class="your-resp"><div class="your-resp-label">Your response</div><div class="your-resp-text" id="echo-q2"></div><div class="your-resp-conf" id="cecho-q2"></div></div>
+    <div class="reveal-box"><div class="reveal-label">Answer</div><div class="reveal-text">Martin Van Buren was the eighth President of the United States (1837–1841), after serving as the eighth Vice President and the tenth Secretary of State under President Andrew Jackson.</div></div>
+    <div class="nudge"><div class="nudge-title">What to notice</div><div class="nudge-text">Pay attention to what your confidence rating <em>felt</em> like. If you were unsure, you probably experienced that uncertainty as a feeling — a kind of blankness or hesitation. If you guessed confidently and got it wrong, that's even more interesting. The feeling of knowing isn't based on whether you actually have the right information stored in memory. It's based on things like <strong>familiarity</strong> (does a name come to mind quickly?), <strong>fluency</strong> (does an answer feel smooth and easy?), and <strong>associations</strong> (do you have memories connected to this topic?). You can feel certain without being correct, and feel uncertain while actually having the right answer. The feeling and the knowledge are two separate things, even though your mind presents them as one.</div></div>
+    <div class="reveal-nav"><button class="btn btn-primary" onclick="goTo('q3')">Next Question →</button></div></div>
+  </div>
+
+  <div class="screen" id="screen-q3">
+    <div class="progress-bar"><div class="progress-seg filled"></div><div class="progress-seg filled"></div><div class="progress-seg current"></div><div class="progress-seg"></div></div>
+    <div class="q-tag">Question 03 / 04</div>
+    <div class="q-text">A bat and a ball cost $1.10 in total. The bat costs $1.00 more than the ball. How much does the ball cost?</div>
+    <input class="answer-input" type="text" id="answer-q3" placeholder="Type your answer here…">
+    <div class="conf-section"><div class="conf-label">How confident are you in your answer?</div><div class="conf-options" id="conf-q3"><button class="conf-btn" data-val="1" onclick="sel(this)">1</button><button class="conf-btn" data-val="2" onclick="sel(this)">2</button><button class="conf-btn" data-val="3" onclick="sel(this)">3</button><button class="conf-btn" data-val="4" onclick="sel(this)">4</button><button class="conf-btn" data-val="5" onclick="sel(this)">5</button></div><div class="conf-ends"><span>Just guessing</span><span>Completely sure</span></div></div>
+    <div class="submit-row"><button class="btn btn-primary" id="submit-q3" disabled onclick="doReveal('q3')">See the Answer →</button></div>
+  </div>
+
+  <div class="screen" id="screen-r3">
+    <div class="progress-bar"><div class="progress-seg filled"></div><div class="progress-seg filled"></div><div class="progress-seg filled"></div><div class="progress-seg"></div></div>
+    <div class="reveal-section"><div class="q-tag">Question 03 — Reveal</div>
+    <div class="your-resp"><div class="your-resp-label">Your response</div><div class="your-resp-text" id="echo-q3"></div><div class="your-resp-conf" id="cecho-q3"></div></div>
+    <div class="reveal-box"><div class="reveal-label">Answer</div><div class="reveal-text">The ball costs <em>$0.05</em>.</div>
+    <div class="math-grid"><div class="math-cell"><div class="math-cell-label">Ball</div><div class="math-cell-val">$0.05</div></div><div class="math-cell"><div class="math-cell-label">Bat</div><div class="math-cell-val">$1.05</div></div><div class="math-cell"><div class="math-cell-label">Total</div><div class="math-cell-val">$1.10</div></div></div></div>
+    <div class="nudge"><div class="nudge-title">What to notice</div><div class="nudge-text">If you said $0.10, you experienced something psychologists call a <strong>fluency effect</strong> — the answer came quickly, felt effortless, and seemed obviously right. That ease is a signal your mind uses to judge accuracy: if it comes to mind easily, it must be correct. But fluency isn't the same as accuracy. Your mind's goal is efficiency — it wants to move from conscious effort to automatic processing as fast as possible. That's useful for survival, but it means your first instinct often prioritizes speed over precision. The feeling of knowing was strong here <em>precisely because</em> the wrong answer felt so natural. This is why the feeling of knowing can be especially unreliable on questions that seem simple.</div></div>
+    <div class="reveal-nav"><button class="btn btn-primary" onclick="goTo('q4')">Next Question →</button></div></div>
+  </div>
+
+  <div class="screen" id="screen-q4">
+    <div class="progress-bar"><div class="progress-seg filled"></div><div class="progress-seg filled"></div><div class="progress-seg filled"></div><div class="progress-seg current"></div></div>
+    <div class="q-tag">Question 04 / 04</div>
+    <div class="q-text">The federally mandated minimum wage is $7.25 per hour. If you could change the law, what hourly rate would you choose?</div>
+    <input class="answer-input" type="text" id="answer-q4" placeholder="Enter a dollar amount…">
+    <div class="conf-section"><div class="conf-label">How confident are you that your chosen rate is fair?</div><div class="conf-options" id="conf-q4"><button class="conf-btn" data-val="1" onclick="sel(this)">1</button><button class="conf-btn" data-val="2" onclick="sel(this)">2</button><button class="conf-btn" data-val="3" onclick="sel(this)">3</button><button class="conf-btn" data-val="4" onclick="sel(this)">4</button><button class="conf-btn" data-val="5" onclick="sel(this)">5</button></div><div class="conf-ends"><span>Very unsure</span><span>Completely sure</span></div></div>
+    <div class="submit-row"><button class="btn btn-primary" id="submit-q4" disabled onclick="doReveal('q4')">See the Answer →</button></div>
+  </div>
+
+  <div class="screen" id="screen-r4">
+    <div class="progress-bar"><div class="progress-seg filled"></div><div class="progress-seg filled"></div><div class="progress-seg filled"></div><div class="progress-seg filled"></div></div>
+    <div class="reveal-section"><div class="q-tag">Question 04 — Reveal</div>
+    <div class="your-resp"><div class="your-resp-label">Your response</div><div class="your-resp-text" id="echo-q4"></div><div class="your-resp-conf" id="cecho-q4"></div></div>
+    <div class="reveal-box"><div class="reveal-label">Answer</div><div class="reveal-text">There is no single correct answer. Your response depends on a set of underlying assumptions: the meaning of money, who works minimum wage jobs, whether you're thinking about workers or business owners, and what role government should play in setting wages.</div></div>
+    <div class="nudge"><div class="nudge-title">What to notice</div><div class="nudge-text">Unlike the first three questions, this one has no factual answer to check against — but the feeling of knowing is still operating. You probably picked a number without fully articulating why. That's because your answer emerged from your <strong>schemas</strong> — your accumulated experiences, values, and assumptions about how the economy works, who deserves what, and what fairness means. These schemas run in the background and produce a feeling of "rightness" about your answer. Notice too whether you had an <strong>emotional reaction</strong>: did the question make you feel frustrated, passionate, or defensive? Emotion is a key ingredient in the feeling of knowing. When a topic connects to your identity or values, the feeling of knowing gets stronger — but that strength comes from personal investment, not from evidence. This is especially important to recognize when you encounter information sources on topics you care about.</div></div>
+    <div class="reveal-nav"><button class="btn btn-primary" onclick="goTo('summary')">See Your Results →</button></div></div>
+  </div>
+
+  <div class="screen" id="screen-summary">
+    <div class="summary-header">
+      <h2>The <span>Feeling</span> of Knowing</h2>
+      <p>Notice what just happened across these four questions. Each time, your mind produced two things: a response and a feeling about that response — a sense of confidence, uncertainty, ease, or struggle. Sometimes that feeling was a reliable guide. Sometimes it wasn't.</p>
+    </div>
+    <div class="results-section"><div class="results-title">Your confidence ratings</div><div id="results-list"></div></div>
+    <div class="fok-card">
+      <h3>Two Things Come Together When You "Know" Something</h3>
+      <div class="fok-parts">
+        <div class="fok-part"><div class="fok-part-num">1</div><div class="fok-part-title">The Memory</div><div class="fok-part-desc">The thing that is known — the actual information stored in your mind</div></div>
+        <div class="fok-part"><div class="fok-part-num">2</div><div class="fok-part-title">The Feeling</div><div class="fok-part-desc">A judgment your mind makes about that memory — shaped by familiarity, fluency, emotion, and identity</div></div>
+      </div>
+      <p>Understanding this feeling is the foundation of everything else in this course, because every time you encounter an information source — a news article, a scholarly paper, an AI-generated response — your mind is making these judgments before you've consciously evaluated anything.</p>
+      <p>Learning to notice the feeling of knowing is the first step toward thinking critically about what you read, hear, and believe.</p>
+    </div>
+    <div class="continue-prompt">Continue to the next section of the module in your LMS. →</div>
+  </div>
+
+</div>
+<script>
+const R={},C={};
+const cL=['—','Just guessing','Not very sure','Somewhat sure','Pretty sure','Completely sure'];
+const qL=['Intelligent women question','8th president','Bat and ball','Minimum wage'];
+function sel(b){b.parentElement.querySelectorAll('.conf-btn').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');const q=b.parentElement.id.replace('conf-','');C[q]=+b.dataset.val;chk(q)}
+function chk(q){const i=document.getElementById('answer-'+q);document.getElementById('submit-'+q).disabled=!(i&&i.value.trim().length>0&&C[q]!==undefined)}
+['q1','q2','q3','q4'].forEach(q=>{const i=document.getElementById('answer-'+q);if(i)i.addEventListener('input',()=>chk(q))});
+function doReveal(q){R[q]=document.getElementById('answer-'+q).value.trim();const n=q.replace('q','');document.getElementById('echo-'+q).textContent=R[q];document.getElementById('cecho-'+q).textContent='Confidence: '+C[q]+'/5 · '+cL[C[q]];goTo('r'+n)}
+function goTo(s){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));document.getElementById('screen-'+s).classList.add('active');window.scrollTo({top:0,behavior:'smooth'});if(s==='summary')buildR()}
+function buildR(){const l=document.getElementById('results-list');l.innerHTML='';['q1','q2','q3','q4'].forEach((q,i)=>{const r=document.createElement('div');r.className='result-row';r.innerHTML=`<div class="result-q">${qL[i]}</div><div class="result-c">${C[q]}/5</div>`;l.appendChild(r)})}
+</script>
+</body>
+</html>
